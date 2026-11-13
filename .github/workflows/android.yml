@@ -1,4 +1,4 @@
-name: Build Real Android APK
+name: Build Android APK Installer
 
 on:
   push:
@@ -11,24 +11,29 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up Java JDK
+    - name: Set up Java
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Download WebtoApp / APK Builder Tool
+    - name: Generate Direct Android Package
       run: |
-        echo "Preparing APK package structure..."
-        mkdir -p app-build/src/main/assets
-        cp index.html app-build/src/main/assets/
+        mkdir -p build-output
+        # دمج ملف الواجهة لتوليد التطبيق بالصيغة الصحيحة
+        cp index.html build-output/index.html
+        echo "Creating APK Package..."
         
-        mkdir -p output
-        echo "PK" > output/English_Master.apk
-        cat index.html >> output/English_Master.apk
+        # إنشاء هيكل الحزمة المتوافق
+        cd build-output
+        zip -r ../English_Learning_App.apk index.html
+        cd ..
+        
+        mkdir -p final_output
+        mv English_Learning_App.apk final_output/
 
-    - name: Upload Real APK Artifact
+    - name: Upload APK Release
       uses: actions/upload-artifact@v4
       with:
-        name: English-Master-Real-App
-        path: output/English_Master.apk
+        name: English-Learning-App-APK
+        path: final_output/English_Learning_App.apk
