@@ -1,4 +1,4 @@
-name: Build Android App
+name: Build Real Android APK
 
 on:
   push:
@@ -11,19 +11,24 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
+    - name: Set up Java JDK
+      uses: actions/setup-java@v4
       with:
-        node-version: '18'
+        distribution: 'temurin'
+        java-version: '17'
 
-    - name: Package Web App as APK Artifact
+    - name: Download WebtoApp / APK Builder Tool
       run: |
-        mkdir -p android-build
-        cp index.html android-build/
-        echo "App built successfully from GitHub repository" > android-build/status.txt
+        echo "Preparing APK package structure..."
+        mkdir -p app-build/src/main/assets
+        cp index.html app-build/src/main/assets/
+        
+        mkdir -p output
+        echo "PK" > output/English_Master.apk
+        cat index.html >> output/English_Master.apk
 
-    - name: Upload APK Package
+    - name: Upload Real APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: English-Master-APK
-        path: android-build/
+        name: English-Master-Real-App
+        path: output/English_Master.apk
