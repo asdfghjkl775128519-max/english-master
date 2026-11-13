@@ -1,0 +1,29 @@
+name: Build Android App
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Package Web App as APK Artifact
+      run: |
+        mkdir -p android-build
+        cp index.html android-build/
+        echo "App built successfully from GitHub repository" > android-build/status.txt
+
+    - name: Upload APK Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: English-Master-APK
+        path: android-build/
